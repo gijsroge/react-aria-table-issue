@@ -1,88 +1,58 @@
-import type { Route } from "./+types/home";
-import { Menu } from "@/components/ui/menu"
-import { Table } from "@/components/ui/table"
-import { IconDotsVertical } from "@intentui/icons"
-import { NumberFormatter } from "@internationalized/number"
-import {TextField} from "~/components/ui/text-field";
-import {Link} from "react-router";
+import type {Route} from "./+types/home";
+import { Cell, Column, Row, Table, TableHeader } from '../table';
+import {useMemo, useState} from "react";
+import {TableBody} from "react-aria-components";
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "New React Router App" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
-export const products = [
-  { id: "1", name: "iPhone 13", category: "Electronics", price: 799, brand: "Apple", stock: 150 },
-  {
-    id: "2",
-    name: "Galaxy S21",
-    category: "Electronics",
-    price: 699,
-    brand: "Samsung",
-    stock: 200,
-  },
-  { id: "3", name: "MacBook Pro", category: "Computers", price: 1299, brand: "Apple", stock: 80 },
-  { id: "4", name: "Dell XPS 13", category: "Computers", price: 999, brand: "Dell", stock: 50 },
-  {
-    id: "5",
-    name: "Sony WH-1000XM4",
-    category: "Headphones",
-    price: 349,
-    brand: "Sony",
-    stock: 120,
-  },
-  { id: "6", name: "AirPods Pro", category: "Headphones", price: 249, brand: "Apple", stock: 180 },
-  {
-    id: "7",
-    name: "Fitbit Charge 5",
-    category: "Wearables",
-    price: 179,
-    brand: "Fitbit",
-    stock: 75,
-  },
-]
-export default function Home() {
-  return <div className={'p-10'}>
-    <Table selectionMode="multiple" aria-label="Products">
-      <Table.Header>
-        <Table.Column className="w-0">#</Table.Column>
-        <Table.Column isRowHeader>Name</Table.Column>
-        <Table.Column>Category</Table.Column>
-        <Table.Column>Price</Table.Column>
-        <Table.Column>Stock</Table.Column>
-        <Table.Column />
-      </Table.Header>
-      <Table.Body items={products}>
-        {(item) => (
-            <Table.Row id={item.id}>
-              <Table.Cell>{item.id}</Table.Cell>
-              <Table.Cell>{item.name} <TextField /></Table.Cell>
-              <Table.Cell>{item.category}</Table.Cell>
-              <Table.Cell>
 
-                {new NumberFormatter("en-US", { style: "currency", currency: "USD" }).format(
-                    item.price,
-                )}
-              </Table.Cell>
-              <Table.Cell>{item.stock}</Table.Cell>
-              <Table.Cell>
-                <div className="flex justify-end">
-                  <Menu>
-                    <Menu.Trigger className="size-6">
-                      <IconDotsVertical />
-                    </Menu.Trigger>
-                    <Menu.Content aria-label="Actions" placement="left top">
-                      <Menu.Item>View</Menu.Item>
-                      <Menu.Item>Edit</Menu.Item>
-                      <Menu.Separator />
-                      <Menu.Item isDanger>Delete</Menu.Item>
-                    </Menu.Content>
-                  </Menu>
-                </div>
-              </Table.Cell>
-            </Table.Row>
+let rows = [
+  {id: 1, name: 'Games', date: '6/7/2020', type: 'File folder'},
+  {id: 2, name: 'Program Files', date: '4/7/2021', type: 'File folder'},
+  {id: 3, name: 'bootmgr', date: '11/20/2010', type: 'System file'},
+  {id: 4, name: 'log.txt', date: '1/18/2016', type: 'Text Document'},
+  {id: 5, name: 'Proposal.ppt', date: '6/18/2022', type: 'PowerPoint file'},
+  {id: 6, name: 'Taxes.pdf', date: '12/6/2023', type: 'PDF Document'},
+  {id: 7, name: 'Photos', date: '8/2/2021', type: 'File folder'},
+  {id: 8, name: 'Documents', date: '3/18/2023', type: 'File folder'},
+  {id: 9, name: 'Budget.xls', date: '1/6/2024', type: 'Excel file'}
+];
+
+
+export default function Home() {
+  let [sortDescriptor, setSortDescriptor] = useState({
+    column: 'name',
+    direction: 'ascending'
+  });
+
+  let items = useMemo(() => {
+    // @ts-ignore
+    let items = rows.slice().sort((a, b) => a[sortDescriptor.column].localeCompare(b[sortDescriptor.column]));
+    if (sortDescriptor.direction === 'descending') {
+      items.reverse();
+    }
+    return items;
+  }, [sortDescriptor]);
+
+  return <div className={'p-10'}>
+    <Table aria-label="Files" onRowAction={null} selectionMode={'multiple'} sortDescriptor={sortDescriptor} onSortChange={setSortDescriptor}>
+      <TableHeader>
+        <Column id="name" isRowHeader allowsSorting>Name</Column>
+        <Column id="type" allowsSorting>Type</Column>
+        <Column id="date" allowsSorting>Date Modified</Column>
+      </TableHeader>
+      <TableBody items={items}>
+        {row => (
+            <Row>
+              <Cell><input type="text" className={'border'}/>{row.name}</Cell>
+              <Cell>{row.type}</Cell>
+              <Cell>{row.date}</Cell>
+            </Row>
         )}
-      </Table.Body>
+      </TableBody>
     </Table>
 
   </div>;
