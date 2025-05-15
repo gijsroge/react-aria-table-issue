@@ -4,6 +4,7 @@ import { Table } from "@/components/ui/table"
 import { IconDotsVertical } from "@intentui/icons"
 import { NumberFormatter } from "@internationalized/number"
 import {TextField} from "~/components/ui/text-field";
+import {Link} from "react-router";
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "New React Router App" },
@@ -42,6 +43,7 @@ export const products = [
 ]
 export default function Home() {
   return <div className={'p-10'}>
+    <Link to={'2'} className={'mb-10 inline-block'}><u>Navigate away</u></Link>
     <Table selectionMode="multiple" aria-label="Products">
       <Table.Header>
         <Table.Column className="w-0">#</Table.Column>
