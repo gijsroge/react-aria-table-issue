@@ -43,7 +43,6 @@ export const products = [
 ]
 export default function Home() {
   return <div className={'p-10'}>
-    <Link to={'2'} className={'mb-10 inline-block'}><u>Navigate away</u></Link>
     <Table selectionMode="multiple" aria-label="Products">
       <Table.Header>
         <Table.Column className="w-0">#</Table.Column>
@@ -85,5 +84,6 @@ export default function Home() {
         )}
       </Table.Body>
     </Table>
+
   </div>;
 }
